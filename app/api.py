@@ -1,9 +1,10 @@
 from fastapi import FastAPI, Body, HTTPException
 import bcrypt
-from app.model import User, UserLogin
+from app.model import User, UserLogin, StockData
 from app.auth.auth_handler import signJWT, sign_refresh_token
 from app.database.database_manager import conn, config
 from sqlalchemy.sql import text
+from app.service.data import stock_data
 
 app = FastAPI()
 
@@ -11,6 +12,10 @@ app = FastAPI()
 @app.get("/", tags=["root"])
 async def read_root() -> dict:
     return {"message": "Welcome aboard!"}
+
+@app.get("/current-price", tags=["price"])
+async def get_current_price() -> list:
+    return stock_data
 
 secret_pass = config["HASH-PASS"]
 

@@ -13,3 +13,7 @@ class UserInformation:
     username: str
     name: str
     coins: int
+
+class StockData:
+    name: str
+    price: int

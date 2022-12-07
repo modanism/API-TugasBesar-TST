@@ -7,3 +7,7 @@ sqlalchemy
 python-dotenv
 bcrypt
 PyMySql
+beautifulsoup4
+requests
+pandas
+lxml
