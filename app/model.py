@@ -15,5 +15,5 @@ class UserInformation:
     coins: int
 
 class DateInformation(BaseModel):
-    type: str
-    amount: int
+    type: str = "week"
+    amount: int = 4

@@ -58,33 +58,122 @@ for data in available_stock_data:
     data["current_price"] = int_price
     current_stock_data.append(data)
 
+### Fetch forecast data from Eagan's API
+loginHeader = {
+    'accept': 'application/json',
+    'Content-Type': 'application/json'
+}
+
+loginData = {
+  "username": "bryanbryan",
+  "password": "eaganeagan"
+}
+loginResponse = requests.post("http://128.199.149.182:8000/user/login",headers=loginHeader,json=loginData)
+
+token = ""
+if loginResponse.status_code == 200:
+    # Access the loginResponse data
+    data = loginResponse.json()
+    token = data["token"]
+else:
+    print('Failed to fetch data')
+
+def fetch_data(datas,forecast_data):
+    header = {
+        'accept': 'application/json',
+        'Authorization': f'Bearer {token}',
+        'Content-Type': 'application/json'
+    }
+    for data in datas:
+        response = requests.post("http://128.199.149.182:8000/prediction/stockforecast",headers=header,json=data)
+        if response.status_code == 200:
+            # Access the response data
+            data = response.json()
+            forecast_data.append(data)
+        else:
+            print(response)
+            print('Failed to fetch data')
+
+
 ### Dummy forecast data
 # Find forecast data (dummy data)
 def find_forecast_data(time, amount):
     if time == "week":
-        forecast_week_stock_data = []
-        # Loop through the list of dictionaries and update the current_price field in each dictionary
-        for dictionary in current_stock_data:
-            updated_dict = dictionary.copy()  # Create a copy of the dictionary
-            updated_dict['current_price'] += (random.randint(1, 100) * (1 + (amount/10)))  # Add a random number between 1 and 1000 to the current_price field in the copy
-            forecast_week_stock_data.append(updated_dict)  # Append the updated dictionary to the new list
-        return forecast_week_stock_data
+        req_datas = []
+        for data in current_stock_data:
+            name_data = data["name"]
+            year_data = find_date("week",amount).year
+            month_data = find_date("week",amount).month
+            day_data = find_date("week",amount).day
+            req_data = {
+                "stockCode": name_data,
+                "year": year_data,
+                "month": month_data,
+                "date": day_data
+            }
+            req_datas.append(req_data)
+        # Create a new thread
+        forecast_data = []
+        thread = threading.Thread(target=fetch_data(req_datas,forecast_data))
+
+        # Start the thread
+        thread.start()
+
+        # Wait for the thread to finish
+        thread.join()
+
+        return forecast_data
+
     if time == "month":
-        forecast_month_stock_data = []
-        # Loop through the list of dictionaries and update the current_price field in each dictionary
-        for dictionary in current_stock_data:
-            updated_dict = dictionary.copy()  # Create a copy of the dictionary
-            updated_dict['current_price'] += (random.randint(100, 500) * (1 + (amount/10)))  # Add a random number between 1 and 1000 to the current_price field in the copy
-            forecast_month_stock_data.append(updated_dict)  # Append the updated dictionary to the new list
-        return forecast_month_stock_data
+        req_datas = []
+        for data in current_stock_data:
+            name_data = data["name"]
+            year_data = find_date("month",amount).year
+            month_data = find_date("month",amount).month
+            day_data = find_date("month",amount).day
+            req_data = {
+                "stockCode": name_data,
+                "year": year_data,
+                "month": month_data,
+                "date": day_data
+            }
+            req_datas.append(req_data)
+        # Create a new thread
+        forecast_data = []
+        thread = threading.Thread(target=fetch_data(req_datas,forecast_data))
+
+        # Start the thread
+        thread.start()
+
+        # Wait for the thread to finish
+        thread.join()
+
+        return forecast_data
     if time == "year":
-        forecast_year_stock_data = []
-        # Loop through the list of dictionaries and update the current_price field in each dictionary
-        for dictionary in current_stock_data:
-            updated_dict = dictionary.copy()  # Create a copy of the dictionary
-            updated_dict['current_price'] += (random.randint(500, 1000) * (1 + (amount/10)))  # Add a random number between 1 and 1000 to the current_price field in the copy
-            forecast_year_stock_data.append(updated_dict)  # Append the updated dictionary to the new list
-        return forecast_year_stock_data
+        req_datas = []
+        for data in current_stock_data:
+            name_data = data["name"]
+            year_data = find_date("year",amount).year
+            month_data = find_date("year",amount).month
+            day_data = find_date("year",amount).day
+            req_data = {
+                "stockCode": name_data,
+                "year": year_data,
+                "month": month_data,
+                "date": day_data
+            }
+            req_datas.append(req_data)
+        # Create a new thread
+        forecast_data = []
+        thread = threading.Thread(target=fetch_data(req_datas,forecast_data))
+
+        # Start the thread
+        thread.start()
+
+        # Wait for the thread to finish
+        thread.join()
+
+        return forecast_data
     if amount == 0:
         return None
     else:
@@ -97,7 +186,7 @@ def find_highest_profit(time, amount): ## Placeholder
     profit_list = []
     for old_data, new_data in zip(current_stock_data, forecast_data):
         old_price = old_data["current_price"]
-        new_price = new_data["current_price"]
+        new_price = new_data["stock price"]
         name = old_data["name"]
         profit = (new_price - old_price) / old_price * 100
         profit_list.append({'name': name, 'profit': profit})
@@ -129,17 +218,31 @@ def find_date(type:str, amount:int):
     if type=="week":
         current_datetime = datetime.now()
         next_date = current_datetime + relativedelta(weeks=amount)
-        return next_date.strftime("%Y-%m-%d")
+        formatted_date = next_date.strftime("%Y-%m-%d")
+        date_format = '%Y-%m-%d'
+        date = datetime.strptime(formatted_date, date_format)
+        return date
     if type=="month":
         current_datetime = datetime.now()
         next_date = current_datetime + relativedelta(months=amount)
-        return next_date.strftime("%Y-%m-%d")
+        formatted_date = next_date.strftime("%Y-%m-%d")
+        date_format = '%Y-%m-%d'
+        date = datetime.strptime(formatted_date, date_format)
+        return date
     if type=="year":
         current_datetime = datetime.now()
         next_date = current_datetime + relativedelta(years=amount)
-        return next_date.strftime("%Y-%m-%d")
+        formatted_date = next_date.strftime("%Y-%m-%d")
+        date_format = '%Y-%m-%d'
+        date = datetime.strptime(formatted_date, date_format)
+        return date
 
-# Fetch forecast data from Eagan's API
+
+
+
+
+
+
 # Send a GET request to the API endpoint
 # datas = []
 # def fetch_data():
@@ -153,14 +256,5 @@ def find_date(type:str, amount:int):
 #             datas.append(data)
 #         else:
 #             print('Failed to fetch data')
-
-# # Create a new thread
-# thread = threading.Thread(target=fetch_data)
-
-# # Start the thread
-# thread.start()
-
-# # Wait for the thread to finish
-# thread.join()
 
 

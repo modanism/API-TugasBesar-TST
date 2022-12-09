@@ -92,9 +92,9 @@ class JWTBearer(HTTPBearer):
 def validateSession(session: JWTService):
     i=0
     for result in conn.execute(text("select id from users")):
-        print(result[0])
-        print(str(result[0]))
-        print(session.userId)
+        # print(result[0])
+        # print(str(result[0]))
+        # print(session.userId)
         if str(result[0]) == str(session.userId):
             i+=1
         else:
