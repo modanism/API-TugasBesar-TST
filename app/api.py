@@ -23,7 +23,10 @@ async def get_current_price(session: JWTService = Depends(JWTBearer())) -> list:
 @app.post("/stock/recommended-stock", tags=["stocks"])
 async def get_recommended_stock(date : DateInformation, session: JWTService = Depends(JWTBearer())):
     if validateSession(session):
-        return find_highest_profit(date.type, date.amount)
+        if date.amount > 0:
+            return find_highest_profit(date.type, date.amount)
+        else:
+            return "Invalid amount"
     else:
         return "Unauthorized access"
 
@@ -34,7 +37,7 @@ def hash_password(password) -> str:
 
 @app.post("/user/signup", tags=["user"])
 async def create_user(user: User):
-    if (len(user.username) < 5 or len(user.username) > 16):
+    if (len(user.username) < 5 or len(user.username) > 25):
         raise HTTPException(status_code=500, detail="username does not fulfill the requirements")
         return
     if (len(user.password) < 8 or len(user.password) > 25):

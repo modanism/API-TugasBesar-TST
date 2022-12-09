@@ -239,22 +239,3 @@ def find_date(type:str, amount:int):
 
 
 
-
-
-
-
-# Send a GET request to the API endpoint
-# datas = []
-# def fetch_data():
-#     for i in available_stock_name:
-#         response = requests.get('https://api.genderize.io?name='+i)
-
-#         # Check the status code of the response
-#         if response.status_code == 200:
-#         # Access the response data
-#             data = response.json()
-#             datas.append(data)
-#         else:
-#             print('Failed to fetch data')
-
-
