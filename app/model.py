@@ -14,6 +14,6 @@ class UserInformation:
     name: str
     coins: int
 
-class StockData:
-    name: str
-    price: int
+class DateInformation(BaseModel):
+    type: str
+    amount: int
