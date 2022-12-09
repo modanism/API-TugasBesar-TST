@@ -13,4 +13,3 @@ pandas
 lxml
 datetime
 python-dateutil
-threading
