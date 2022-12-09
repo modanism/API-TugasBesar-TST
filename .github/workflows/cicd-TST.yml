@@ -60,4 +60,3 @@ jobs:
            # Run image and open port
            docker run -d -p 8069:8000 --name container-modan mochdhany25/myimage
            echo "container started succesfully"
-	         docker cp /usr/share/modave/.env container-modan:/code/.env

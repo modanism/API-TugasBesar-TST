@@ -1,10 +1,11 @@
-from fastapi import FastAPI, Body, HTTPException
+from fastapi import FastAPI, Depends, HTTPException
 import bcrypt
 from app.model import User, UserLogin, DateInformation
-from app.auth.auth_handler import signJWT, sign_refresh_token
+from app.auth.auth_handler import signJWT, sign_refresh_token, validateSession, JWTService, JWTBearer
 from app.database.database_manager import conn, config
 from sqlalchemy.sql import text
 from app.service.data import find_date, current_stock_data, find_highest_profit
+
 
 app = FastAPI()
 
@@ -12,13 +13,19 @@ app = FastAPI()
 async def read_root() -> dict:
     return {"message": "Welcome aboard!"}
 
-@app.get("/current-price", tags=["stocks"])
-async def get_current_price() -> list:
-    return current_stock_data
+@app.get("/stock/current-price", tags=["stocks"])
+async def get_current_price(session: JWTService = Depends(JWTBearer())) -> list:
+    if validateSession(session):
+        return current_stock_data
+    else:
+        return "Unauthorized access"
 
-@app.post("/recommended-stock", tags=["stocks"])
-async def get_recommended_stock(date : DateInformation):
-    return find_highest_profit(date.type, date.amount)
+@app.post("/stock/recommended-stock", tags=["stocks"])
+async def get_recommended_stock(date : DateInformation, session: JWTService = Depends(JWTBearer())):
+    if validateSession(session):
+        return find_highest_profit(date.type, date.amount)
+    else:
+        return "Unauthorized access"
 
 secret_pass = config["HASH-PASS"]
 

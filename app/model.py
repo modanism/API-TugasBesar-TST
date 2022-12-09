@@ -6,8 +6,8 @@ class User(BaseModel):
     password: str
 
 class UserLogin(BaseModel):
-    username: str
-    password: str
+    username: str = "xxxadminxxx"
+    password: str = "admin123"
 
 class UserInformation:
     username: str

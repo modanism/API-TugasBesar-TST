@@ -86,9 +86,15 @@ def find_forecast_data(time, amount):
             updated_dict['current_price'] += (random.randint(500, 1000) * (1 + (amount/10)))  # Add a random number between 1 and 1000 to the current_price field in the copy
             forecast_year_stock_data.append(updated_dict)  # Append the updated dictionary to the new list
         return forecast_year_stock_data
+    if amount == 0:
+        return None
+    else:
+        return None
 
 def find_highest_profit(time, amount): ## Placeholder
     forecast_data = find_forecast_data(time, amount)
+    if (forecast_data is None):
+        return "Wrong format"
     profit_list = []
     for old_data, new_data in zip(current_stock_data, forecast_data):
         old_price = old_data["current_price"]
@@ -157,3 +163,5 @@ def find_date(type:str, amount:int):
 
 # # Wait for the thread to finish
 # thread.join()
+
+
