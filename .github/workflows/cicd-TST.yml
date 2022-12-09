@@ -48,15 +48,15 @@ jobs:
            docker pull mochdhany25/myimage
            echo "new image pulled"
            # Stop running container
-           docker stop container-modan
+           docker stop container-mods
            echo "old container stopped"
            # Remove old container
-           docker rm container-modan
+           docker rm container-mods
            echo "old container removed"
            # Remove dangling image
            docker image prune -a
            yes | head -1
            echo "dangling image removed"
            # Run image and open port
-           docker run -d -p 8069:8000 --name container-modan mochdhany25/myimage
+           docker run -d -p 8069:8000 --name container-mods mochdhany25/myimage
            echo "container started succesfully"
