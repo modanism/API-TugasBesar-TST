@@ -90,12 +90,12 @@ def fetch_data(datas,forecast_data):
             # Access the response data
             data = response.json()
             forecast_data.append(data)
+            print(data)
         else:
+            # failData = {'stock price': 0}
+            # forecast_data.append(failData)
             print(response)
-            print('Failed to fetch data')
 
-
-### Dummy forecast data
 # Find forecast data (dummy data)
 def find_forecast_data(time, amount):
     if time == "week":

@@ -24,7 +24,10 @@ async def get_current_price(session: JWTService = Depends(JWTBearer())) -> list:
 async def get_recommended_stock(date : DateInformation, session: JWTService = Depends(JWTBearer())):
     if validateSession(session):
         if date.amount > 0:
-            return find_highest_profit(date.type, date.amount)
+            if len(find_highest_profit(date.type, date.amount)) < 1:
+                return "Failed fetching data"
+            else:
+                return find_highest_profit(date.type, date.amount)
         else:
             return "Invalid amount"
     else:
